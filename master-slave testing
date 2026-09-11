@@ -1,0 +1,21 @@
+pipeline {
+    agent { label "slave"}
+
+    stages {
+        stage('stage 1: Printing hello') {
+            steps {
+                echo 'Hello Skill Nebula learners'
+            }
+        }
+        stage('Satage 2: Printing date and time') {
+            steps {
+                sh 'date > date.txt'
+            }
+        }
+        stage('Stage 3: Creating file') {
+            steps {
+                sh 'echo "hello" > hello.txt'
+            }
+        }
+    }
+}
