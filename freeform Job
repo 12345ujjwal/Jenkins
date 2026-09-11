@@ -1,0 +1,5 @@
+echo "hello from Skill Nebula"
+mkdir -p skillnebula
+cd skillnebula
+touch myfile.txt
+echo "BHAI KAAM PURA HUWA, PAISA DO"
