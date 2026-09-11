@@ -3,14 +3,6 @@ pipeline {
     agent { label "slave"}
 
     stages {
-        stage("From library") {
-            steps {
-                script {
-                    hello()
-                }
-            }
-        }
-        
         stage('1: CODE cloning') {
             steps {
                 script {
@@ -18,7 +10,6 @@ pipeline {
                 }
             }
         }
-        
         stage('2: Docker installation') {
             steps {
                 echo 'Installing Docker'
@@ -28,7 +19,6 @@ pipeline {
                 sh 'sudo systemctl start docker && sudo systemctl enable docker'
             }
         }
-        
         stage('3: BUILD docker image') {
             steps {
                 script{
