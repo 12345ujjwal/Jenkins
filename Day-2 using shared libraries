@@ -3,7 +3,7 @@ pipeline {
     agent { label "slave"}
 
     stages {
-        stage("0: library Testing") {
+        stage("From library") {
             steps {
                 script {
                     hello()
@@ -39,14 +39,9 @@ pipeline {
         stage('4: PUSH to Docker Hub') {
             steps {
                 echo 'Pushing image to Docker Hub' 
-                withCredentials([usernamePassword(
-                    credentialsId:'jenkin-dockerhub',
-                    passwordVariable: 'dockerHubPass',
-                    usernameVariable:'dockerHubUser')]){
-                        sh 'docker login -u $dockerHubUser -p $dockerHubPass'
-                        sh 'docker image tag notes-app:latest $dockerHubUser/notes-app:latest'
-                        sh 'docker push $dockerHubUser/notes-app:latest'
-                    }
+                script{
+                    docker_push('notes-app','latest')
+                }
             }
         }
         stage('5: DEPLOY using docker compose') {
