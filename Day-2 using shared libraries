@@ -3,7 +3,7 @@ pipeline {
     agent { label "slave"}
 
     stages {
-        stage("library Testing") {
+        stage("0: library Testing") {
             steps {
                 script {
                     hello()
