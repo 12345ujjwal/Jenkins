@@ -1,0 +1,49 @@
+pipeline {
+    agent { label "slave"}
+
+    stages {
+        stage('1: CODE cloning') {
+            steps {
+                echo 'Cloning Code'
+                git url: 'https://github.com/12345ujjwal/django-notes-app-k8s.git', branch: 'main'
+                echo 'code clonning done'
+            }
+        }
+        stage('2: Docker installation') {
+            steps {
+                echo 'Installing Docker'
+                sh 'sudo apt install docker.io -y'
+                sh 'sudo usermod -aG docker $USER'
+                sh 'newgrp docker'
+                sh 'sudo systemctl start docker && sudo systemctl enable docker'
+            }
+        }
+        stage('3: BUILD docker image') {
+            steps {
+                echo 'Building Image from Dockerfile'
+                sh 'sudo docker build -t notes-app:latest .'
+            }
+        }
+        stage('4: PUSH to Docker Hub') {
+            steps {
+                echo 'Pushing image to Docker Hub' 
+                withCredentials([usernamePassword(
+                    credentialsId:'jenkin-dockerhub',
+                    passwordVariable: 'dockerHubPass',
+                    usernameVariable:'dockerHubUser')]){
+                        sh 'docker login -u $dockerHubUser -p $dockerHubPass'
+                        sh 'docker image tag notes-app:latest $dockerHubUser/notes-app:latest'
+                        sh 'docker push $dockerHubUser/notes-app:latest'
+                    }
+            }
+        }
+        stage('5: DEPLOY using docker compose') {
+            steps {
+                sh 'sudo apt update'
+                sh 'sudo apt install docker-compose'
+                sh 'docker compose up -d'
+                echo "Successfully Deployed"
+            }
+        }
+    }
+}
