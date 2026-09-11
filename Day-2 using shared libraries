@@ -3,7 +3,7 @@ pipeline {
     agent { label "slave"}
 
     stages {
-        stage("From library") {
+        stage("library Testing") {
             steps {
                 script {
                     hello()
@@ -13,11 +13,12 @@ pipeline {
         
         stage('1: CODE cloning') {
             steps {
-                echo 'Cloning Code'
-                git url: 'https://github.com/12345ujjwal/django-notes-app-k8s.git', branch: 'main'
-                echo 'code clonning done'
+                script {
+                    clone('https://github.com/12345ujjwal/django-notes-app-k8s.git','main')
+                }
             }
         }
+        
         stage('2: Docker installation') {
             steps {
                 echo 'Installing Docker'
@@ -27,10 +28,12 @@ pipeline {
                 sh 'sudo systemctl start docker && sudo systemctl enable docker'
             }
         }
+        
         stage('3: BUILD docker image') {
             steps {
-                echo 'Building Image from Dockerfile'
-                sh 'sudo docker build -t notes-app:latest .'
+                script{
+                    docker_build('notes-app','latest','ujjwalpratap')
+                }
             }
         }
         stage('4: PUSH to Docker Hub') {
