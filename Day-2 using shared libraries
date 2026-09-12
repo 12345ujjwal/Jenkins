@@ -12,11 +12,9 @@ pipeline {
         }
         stage('2: Docker installation') {
             steps {
-                echo 'Installing Docker'
-                sh 'sudo apt install docker.io -y'
-                sh 'sudo usermod -aG docker $USER'
-                sh 'newgrp docker'
-                sh 'sudo systemctl start docker && sudo systemctl enable docker'
+                script{
+                    installdocker()
+               }
             }
         }
         stage('3: BUILD docker image') {
